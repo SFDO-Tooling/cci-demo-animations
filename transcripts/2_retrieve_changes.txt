@@ -1,0 +1,424 @@
+  ____           _            _                  _                 
+ |  _ \    ___  | |_   _ __  (_)   ___  __   __ (_)  _ __     __ _ 
+ | |_) |  / _ \ | __| | '__| | |  / _ \ \ \ / / | | | '_ \   / _` |
+ |  _ <  |  __/ | |_  | |    | | |  __/  \ V /  | | | | | | | (_| |
+ |_| \_\  \___|  \__| |_|    |_|  \___|   \_/   |_| |_| |_|  \__, |
+                                                             |___/ 
+   ___                      ____   _                                          
+  / _ \   _ __    __ _     / ___| | |__     __ _   _ __     __ _    ___   ___ 
+ | | | | | '__|  / _` |   | |     | '_ \   / _` | | '_ \   / _` |  / _ \ / __|
+ | |_| | | |    | (_| |   | |___  | | | | | (_| | | | | | | (_| | |  __/ \__ \
+  \___/  |_|     \__, |    \____| |_| |_|  \__,_| |_| |_|  \__, |  \___| |___/
+                 |___/                                     |___/              
+
+$ # Food banks need to track deliveries. So offscreen we created Delivery__c and Delivery_Item__c using Salesforce's Setup UI.
+
+$ # Now we want to pull those changes into git. We'll start by looking for a task that can summarize our org changes. 
+
+$ # CCI can list all of its available tasks:
+
+$ cci task list
+(0lMetadata Transformations(0qqqqqqqqwqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk
+(0x Task                           (0x Description                                                                      (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x activate_flow                  (0x Activates Flows identified by a given list of Developer Names                    (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x add_page_layout_related_lists  (0x Adds specified Related List to one or more Page Layouts.                         (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x add_permission_set_perms       (0x Adds specified Apex class access and Field-Level Security to a Permission Set.   (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x add_picklist_entries           (0x Adds specified picklist entries to a custom picklist field.                      (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x add_standard_value_set_entries (0x Adds specified picklist entries to a Standard Value Set.                         (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x set_duplicate_rule_status      (0x Sets the active status of Duplicate Rules.                                       (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x set_organization_wide_defaults (0x Sets the Organization-Wide Defaults for specific sObjects, and waits for sharing (0x
+(0x                                (0x recalculation to complete.                                                       (0x
+(0mqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqvqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj
+
+(0lSalesforce(0qqqqqqqqqqqqqqqqqqwqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk
+(0x Task                       (0x Description                                                                        (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x batch_apex_wait            (0x Waits on a batch apex job to finish.                                               (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x custom_settings_value_wait (0x Waits for a specific field value on the specified custom settings object and field (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x execute_anon               (0x Execute anonymous apex via the tooling api.                                        (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x insert_record              (0x Inserts a record of any sObject using the REST API                                 (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x run_tests                  (0x Runs all apex tests                                                                (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x unschedule_apex            (0x Unschedule all scheduled apex jobs (CronTriggers).                                 (0x
+(0mqqqqqqqqqqqqqqqqqqqqqqqqqqqqvqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj
+
+(0lUtilities(0qqqwqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk
+(0x Task       (0x Description                   (0x
+(0tqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x command    (0x Run an arbitrary command      (0x
+(0tqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x log        (0x Log a line at the info level. (0x
+(0tqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x util_sleep (0x Sleeps for N seconds          (0x
+(0mqqqqqqqqqqqqvqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj
+
+(0lSetup(0qqqqqqqqqqwqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk
+(0x Task          (0x Description                                                                       (0x
+(0tqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x connected_app (0x Creates the Connected App needed to use persistent orgs in the CumulusCI keychain (0x
+(0mqqqqqqqqqqqqqqqvqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj
+
+(0lSalesforce Communities(0qqqqwqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk
+(0x Task                     (0x Description                                                   (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x create_community         (0x Creates a Community in the target org using the Connect API   (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x list_communities         (0x Lists Communities for the current org using the Connect API.  (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x list_community_templates (0x Prints the Community Templates available to the current org   (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x publish_community        (0x Publishes a Community in the target org using the Connect API (0x
+(0mqqqqqqqqqqqqqqqqqqqqqqqqqqvqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj
+
+(0lSalesforce Packages(0qqqwqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk
+(0x Task                 (0x Description                                                                       (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x create_package       (0x Creates a package in the target org with the default package name for the project (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x install_managed      (0x Install the latest managed production release                                     (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x install_managed_beta (0x Installs the latest managed beta release                                          (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x uninstall_managed    (0x Uninstalls the managed version of the package                                     (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x update_dependencies  (0x Installs all dependencies in project__dependencies into the target org            (0x
+(0mqqqqqqqqqqqqqqqqqqqqqqvqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj
+
+(0lSalesforce Metadata(0qqqqqqqqqqqqqwqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk
+(0x Task                           (0x Description                                                                        (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x create_managed_src             (0x Modifies the src directory for managed deployment.  Strips //cumulusci-managed     (0x
+(0x                                (0x from all Apex code                                                                 (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x create_unmanaged_ee_src        (0x Modifies the src directory for unmanaged deployment to an EE org                   (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x deploy                         (0x Deploys the src directory of the repository to the org                             (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x deploy_post                    (0x Deploys all metadata bundles under unpackaged/post/                                (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x deploy_pre                     (0x Deploys all metadata bundles under unpackaged/pre/                                 (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x deploy_qa_config               (0x Deploys configuration for QA.                                                      (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x ensure_record_types            (0x Ensure that a default Record Type is extant on the given standard sObject (custom  (0x
+(0x                                (0x objects are not supported). If Record Types are already present, do nothing.       (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x list_changes                   (0x List the changes from a scratch org                                                (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x list_metadata_types            (0x Prints the metadata types in a project                                             (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x meta_xml_apiversion            (0x Set the API version in ``*meta.xml`` files                                         (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x meta_xml_dependencies          (0x Set the version for dependent packages                                             (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x remove_metadata_xml_elements   (0x Remove specified XML elements from one or more metadata files                      (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x retrieve_changes               (0x Retrieve changed components from a scratch org                                     (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x retrieve_packaged              (0x Retrieves the packaged metadata from the org                                       (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x retrieve_qa_config             (0x Retrieves the current changes in the scratch org into unpackaged/config/qa         (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x retrieve_src                   (0x Retrieves the packaged metadata into the src directory                             (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x revert_managed_src             (0x Reverts the changes from create_managed_src                                        (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x revert_unmanaged_ee_src        (0x Reverts the changes from create_unmanaged_ee_src                                   (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x snapshot_changes               (0x Tell SFDX source tracking to ignore previous changes in a scratch org              (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x uninstall_packaged             (0x Uninstalls all deleteable metadata in the package in the target org                (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x uninstall_packaged_incremental (0x Deletes any metadata from the package in the target org not in the local workspace (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x uninstall_post                 (0x Uninstalls the unpackaged/post bundles                                             (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x uninstall_pre                  (0x Uninstalls the unpackaged/pre bundles                                              (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x uninstall_src                  (0x Uninstalls all metadata in the local src directory                                 (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x update_admin_profile           (0x Retrieves, edits, and redeploys the Admin.profile with full FLS perms for all      (0x
+(0x                                (0x objects/fields                                                                     (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x update_package_xml             (0x Updates src/package.xml with metadata in src/                                      (0x
+(0mqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqvqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj
+
+(0lSalesforce DX(0qqqqwqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk
+(0x Task            (0x Description                                                                (0x
+(0tqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x dx_convert_from (0x Converts force-app directory in sfdx format into metadata format under src (0x
+(0tqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x dx_convert_to   (0x Converts src directory metadata format into sfdx format under force-app    (0x
+(0tqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x dx_pull         (0x Uses sfdx to pull from a scratch org into the force-app directory          (0x
+(0tqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x dx_push         (0x Uses sfdx to push the force-app directory metadata into a scratch org      (0x
+(0tqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x org_settings    (0x Apply org settings from a scratch org definition file                      (0x
+(0mqqqqqqqqqqqqqqqqqvqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj
+
+(0lOther(0qqqqqqqqqqqqqqqqqqqqqwqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk
+(0x Task                     (0x Description                                             (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x generate_data_dictionary (0x Create a data dictionary for the project in CSV format. (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x retrieve_unpackaged      (0x Retrieve the contents of a package.xml file.            (0x
+(0mqqqqqqqqqqqqqqqqqqqqqqqqqqvqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj
+
+(0lData Operations(0qqqqqqqqqqqqqqwqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk
+(0x Task                        (0x Description                                                     (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x extract_dataset             (0x Extract a sample dataset using the bulk API.                    (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x generate_and_load_from_yaml (0x                                                                 (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x generate_dataset_mapping    (0x Create a mapping for extracting data from an org.               (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x load_custom_settings        (0x Load Custom Settings specified in a YAML file to the target org (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x load_dataset                (0x Load a sample dataset using the bulk API.                       (0x
+(0mqqqqqqqqqqqqqqqqqqqqqqqqqqqqqvqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj
+
+(0lSalesforce Preflight Checks(0qqqqqqqqqqqqwqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk
+(0x Task                                  (0x Description                                                                (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x get_available_licenses                (0x Retrieves a list of the currently available license definition keys        (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x get_available_permission_set_licenses (0x Retrieves a list of the currently available Permission Set License         (0x
+(0x                                       (0x definition keys                                                            (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x get_installed_packages                (0x Retrieves a list of the currently installed managed package namespaces and (0x
+(0x                                       (0x their versions                                                             (0x
+(0mqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqvqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj
+
+(0lGitHub(0qqqqqqqqqqqqqqqqqqqqqwqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk
+(0x Task                      (0x Description                                                                            (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x github_clone_tag          (0x Clones a github tag under a new name.                                                  (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x github_master_to_feature  (0x Merges the latest commit on the master branch into all open feature branches           (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x github_parent_pr_notes    (0x Merges the description of a child pull request to the respective parent's pull request (0x
+(0x                           (0x (if one exists).                                                                       (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x github_parent_to_children (0x Merges the latest commit on a parent feature branch into all child feature branches    (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x github_pull_requests      (0x Lists open pull requests in project Github repository                                  (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x github_release            (0x Creates a Github release for a given managed package version number                    (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x github_release_notes      (0x Generates release notes by parsing pull request bodies of merged pull requests between (0x
+(0x                           (0x two tags                                                                               (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x github_release_report     (0x Parses GitHub release notes to report various info                                     (0x
+(0mqqqqqqqqqqqqqqqqqqqqqqqqqqqvqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj
+
+(0lRelease Management(0qqwqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk
+(0x Task               (0x Description                                                                 (0x
+(0tqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x metadeploy_publish (0x Publish a release to the MetaDeploy web installer                           (0x
+(0tqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x upload_beta        (0x Uploads a beta release of the metadata currently in the packaging org       (0x
+(0tqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x upload_production  (0x Uploads a production release of the metadata currently in the packaging org (0x
+(0mqqqqqqqqqqqqqqqqqqqqvqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj
+
+(0lPush Upgrades(0qqqqqqqqwqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk
+(0x Task                (0x Description                                                                            (0x
+(0tqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x push_all            (0x Schedules a push upgrade of a package version to all subscribers                       (0x
+(0tqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x push_failure_report (0x Produce a CSV report of the failed and otherwise anomalous push jobs.                  (0x
+(0tqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x push_list           (0x Schedules a push upgrade of a package version to all orgs listed in the specified file (0x
+(0tqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x push_qa             (0x Schedules a push upgrade of a package version to all orgs listed in push/orgs_qa.txt   (0x
+(0tqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x push_sandbox        (0x Schedules a push upgrade of a package version to all subscribers                       (0x
+(0tqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x push_trial          (0x Schedules a push upgrade of a package version to Trialforce Template orgs listed in    (0x
+(0x                     (0x push/orgs_trial.txt                                                                    (0x
+(0mqqqqqqqqqqqqqqqqqqqqqvqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj
+
+(0lSalesforce Bulk API(0qqqqqqqqqqqqqqqqk
+(0x Task  (0x Description               (0x
+(0tqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x query (0x Queries the connected org (0x
+(0mqqqqqqqvqqqqqqqqqqqqqqqqqqqqqqqqqqqj
+
+(0lRobot Framework(0wqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk
+(0x Task          (0x Description                                                                           (0x
+(0tqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x robot         (0x Runs a Robot Framework test from a .robot file                                        (0x
+(0tqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x robot_libdoc  (0x Generates documentation for project keyword files                                     (0x
+(0tqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x robot_lint    (0x Static analysis tool for robot framework files                                        (0x
+(0tqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x robot_testdoc (0x Generates html documentation of your Robot test suite and writes to tests/test_suite. (0x
+(0mqqqqqqqqqqqqqqqvqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj
+
+(0lNPSP/EDA(0qqqqqqqqqqqqqqqqqqqqqqqwqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk
+(0x Task                          (0x Description                             (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x disable_tdtm_trigger_handlers (0x Disable specified TDTM trigger handlers (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x restore_tdtm_trigger_handlers (0x Restore status of TDTM trigger handlers (0x
+(0mqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqvqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj
+
+Use cci task info <task_name> to get more information about a task.
+
+$ # That's a lot. And, by the way, you can add your own tasks if you want!
+
+$ # Let's use grep to search for something specific
+
+$ cci task list | grep changes
+(0x list_changes                   (0x List the changes from a scratch org                                                (0x
+(0x retrieve_changes               (0x Retrieve changed components from a scratch org                                     (0x
+(0x retrieve_qa_config             (0x Retrieves the current changes in the scratch org into unpackaged/config/qa         (0x
+(0x revert_managed_src             (0x Reverts the changes from create_managed_src                                        (0x
+(0x revert_unmanaged_ee_src        (0x Reverts the changes from create_unmanaged_ee_src                                   (0x
+(0x snapshot_changes               (0x Tell SFDX source tracking to ignore previous changes in a scratch org              (0x
+
+$ cci task info list_changes | head
+list_changes
+
+  Description: List the changes from a scratch org
+
+  Class: cumulusci.tasks.salesforce.sourcetracking.ListChanges
+
+  Command Syntax
+
+    $ cci task run list_changes
+
+
+$ # That's the one we want!
+
+$ cci task run list_changes
+2020-06-23 09:32:30: Getting scratch org info from Salesforce DX
+2020-06-23 09:32:34: Beginning task: ListChanges
+2020-06-23 09:32:34:        As user: test-bp0novuz7vyq@example.com
+2020-06-23 09:32:34:         In org: 00D63000000AYLB
+2020-06-23 09:32:34: 
+2020-06-23 09:32:34: Found 14 changed components in the scratch org.
+2020-06-23 09:32:34: CustomField: Delivery_Item__c.Delivery__c
+2020-06-23 09:32:34: CustomField: Delivery_Item__c.Description__c
+2020-06-23 09:32:34: CustomField: Delivery_Item__c.DjFoodBankID__c
+2020-06-23 09:32:34: CustomField: Delivery_Item__c.Storage_Requirements__c
+2020-06-23 09:32:34: CustomField: Delivery__c.DjFoodBankID__c
+2020-06-23 09:32:34: CustomField: Delivery__c.Notes__c
+2020-06-23 09:32:34: CustomField: Delivery__c.Scheduled_Date__c
+2020-06-23 09:32:34: CustomField: Delivery__c.Status__c
+2020-06-23 09:32:34: CustomField: Delivery__c.Supplier__c
+2020-06-23 09:32:34: Layout: Delivery_Item__c-Delivery Item Layout
+2020-06-23 09:32:34: Layout: Delivery__c-Delivery Layout
+2020-06-23 09:32:34: CustomObject: Delivery_Item__c
+2020-06-23 09:32:34: CustomObject: Delivery__c
+2020-06-23 09:32:34: CustomTab: Delivery__c
+
+
+
+$ cci task run retrieve_changes
+2020-06-23 09:32:41: Getting scratch org info from Salesforce DX
+2020-06-23 09:32:44: Beginning task: RetrieveChanges
+2020-06-23 09:32:44:        As user: test-bp0novuz7vyq@example.com
+2020-06-23 09:32:44:         In org: 00D63000000AYLB
+2020-06-23 09:32:44: 
+2020-06-23 09:32:44: Querying Salesforce for changed source members
+2020-06-23 09:32:44: CustomField: Delivery_Item__c.Delivery__c
+2020-06-23 09:32:44: CustomField: Delivery_Item__c.Description__c
+2020-06-23 09:32:44: CustomField: Delivery_Item__c.DjFoodBankID__c
+2020-06-23 09:32:44: CustomField: Delivery_Item__c.Storage_Requirements__c
+2020-06-23 09:32:44: CustomField: Delivery__c.DjFoodBankID__c
+2020-06-23 09:32:44: CustomField: Delivery__c.Notes__c
+2020-06-23 09:32:44: CustomField: Delivery__c.Scheduled_Date__c
+2020-06-23 09:32:44: CustomField: Delivery__c.Status__c
+2020-06-23 09:32:44: CustomField: Delivery__c.Supplier__c
+2020-06-23 09:32:44: Layout: Delivery_Item__c-Delivery Item Layout
+2020-06-23 09:32:44: Layout: Delivery__c-Delivery Layout
+2020-06-23 09:32:44: CustomObject: Delivery_Item__c
+2020-06-23 09:32:44: CustomObject: Delivery__c
+2020-06-23 09:32:44: CustomTab: Delivery__c
+2020-06-23 09:32:44: Retrieving components with command: sfdx force:source:retrieve -a 48.0 -x /tmp/cci-demo/tmpupvj5ovv/package.xml -w 5
+=== Retrieved Source
+FULL NAME                                 TYPE          PROJECT PATH
+────────────────────────────────────────  ────────────  ─────────────────────────────────────────────────────────────────────────────────────────────
+Delivery__c                               CustomObject  force-app/main/default/objects/Delivery__c/Delivery__c.object-meta.xml
+Delivery__c.DjFoodBankID__c               CustomField   force-app/main/default/objects/Delivery__c/fields/DjFoodBankID__c.field-meta.xml
+Delivery__c.Notes__c                      CustomField   force-app/main/default/objects/Delivery__c/fields/Notes__c.field-meta.xml
+Delivery__c.Scheduled_Date__c             CustomField   force-app/main/default/objects/Delivery__c/fields/Scheduled_Date__c.field-meta.xml
+Delivery__c.Status__c                     CustomField   force-app/main/default/objects/Delivery__c/fields/Status__c.field-meta.xml
+Delivery__c.Supplier__c                   CustomField   force-app/main/default/objects/Delivery__c/fields/Supplier__c.field-meta.xml
+Delivery__c.All                           ListView      force-app/main/default/objects/Delivery__c/listViews/All.listView-meta.xml
+Delivery_Item__c                          CustomObject  force-app/main/default/objects/Delivery_Item__c/Delivery_Item__c.object-meta.xml
+Delivery_Item__c.Delivery__c              CustomField   force-app/main/default/objects/Delivery_Item__c/fields/Delivery__c.field-meta.xml
+Delivery_Item__c.Description__c           CustomField   force-app/main/default/objects/Delivery_Item__c/fields/Description__c.field-meta.xml
+Delivery_Item__c.DjFoodBankID__c          CustomField   force-app/main/default/objects/Delivery_Item__c/fields/DjFoodBankID__c.field-meta.xml
+Delivery_Item__c.Storage_Requirements__c  CustomField   force-app/main/default/objects/Delivery_Item__c/fields/Storage_Requirements__c.field-meta.xml
+Delivery__c-Delivery Layout               Layout        force-app/main/default/layouts/Delivery__c-Delivery Layout.layout-meta.xml
+Delivery_Item__c-Delivery Item Layout     Layout        force-app/main/default/layouts/Delivery_Item__c-Delivery Item Layout.layout-meta.xml
+Delivery__c                               CustomTab     force-app/main/default/tabs/Delivery__c.tab-meta.xml
+2020-06-23 09:32:52: Storing snapshot of changes
+
+
+
+$ git status
+On branch master
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   .gitignore
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	force-app/
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+$ git add force-app
+
+$ git commit -m "Initial schema for delivery tracking"
+[master 40665ad] Initial schema for delivery tracking
+ 15 files changed, 644 insertions(+)
+ create mode 100644 force-app/main/default/layouts/Delivery_Item__c-Delivery Item Layout.layout-meta.xml
+ create mode 100644 force-app/main/default/layouts/Delivery__c-Delivery Layout.layout-meta.xml
+ create mode 100644 force-app/main/default/objects/Delivery_Item__c/Delivery_Item__c.object-meta.xml
+ create mode 100644 force-app/main/default/objects/Delivery_Item__c/fields/Delivery__c.field-meta.xml
+ create mode 100644 force-app/main/default/objects/Delivery_Item__c/fields/Description__c.field-meta.xml
+ create mode 100644 force-app/main/default/objects/Delivery_Item__c/fields/DjFoodBankID__c.field-meta.xml
+ create mode 100644 force-app/main/default/objects/Delivery_Item__c/fields/Storage_Requirements__c.field-meta.xml
+ create mode 100644 force-app/main/default/objects/Delivery__c/Delivery__c.object-meta.xml
+ create mode 100644 force-app/main/default/objects/Delivery__c/fields/DjFoodBankID__c.field-meta.xml
+ create mode 100644 force-app/main/default/objects/Delivery__c/fields/Notes__c.field-meta.xml
+ create mode 100644 force-app/main/default/objects/Delivery__c/fields/Scheduled_Date__c.field-meta.xml
+ create mode 100644 force-app/main/default/objects/Delivery__c/fields/Status__c.field-meta.xml
+ create mode 100644 force-app/main/default/objects/Delivery__c/fields/Supplier__c.field-meta.xml
+ create mode 100644 force-app/main/default/objects/Delivery__c/listViews/All.listView-meta.xml
+ create mode 100644 force-app/main/default/tabs/Delivery__c.tab-meta.xml
+
+$ # We're done with this scratch org, and all of our metadata has been saved to git. We can safely delete it!
+
+$ cci org scratch_delete dev
+2020-06-23 09:33:27: Deleting scratch org with command: sfdx force:org:delete -p -u test-bp0novuz7vyq@example.com
+2020-06-23 09:33:30: Successfully marked scratch org test-bp0novuz7vyq@example.com for deletion
+
+  _____      _      ____       _      _ 
+ |_   _|    / \    |  _ \     / \    | |
+   | |     / _ \   | | | |   / _ \   | |
+   | |    / ___ \  | |_| |  / ___ \  |_|
+   |_|   /_/   \_\ |____/  /_/   \_\ (_)
+                                        
+
+$ # The next video will show how to populate the org with sample data.
+
