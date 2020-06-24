@@ -86,7 +86,7 @@ comment(){
     /bin/sleep $shortpause
     prompt
     printf "$ESC[32;1m"  
-    echo "$command" | $slowtype
+    echo "$command" | fold -s -w 80 | $slowtype
     printf "$RESET"
     /bin/sleep $shortpause
 }
@@ -114,8 +114,8 @@ typedo (){
     eval $command | sponge | (while read; do printf  -- "%s\n" "$REPLY"; sleep $scrolllinepause; done)
 }
   
-pretend_interact (){
-    echo -en $1
+pretend_interact(){
+    echo -en $1 | fold -s -w 80
     echo -n " "
     /bin/sleep $longpause
     faketype $2 
