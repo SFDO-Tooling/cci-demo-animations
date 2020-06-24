@@ -3,6 +3,7 @@
 # look at animation/README to know what's going on.
 
 set -e
+set -x 
 
 realpath() {
     [[ $1 = /* ]] && echo "$1" || echo "$PWD/${1#./}"
@@ -36,6 +37,19 @@ cci org scratch_delete dev
 cci org scratch_delete qa
 cd ..
 echo "Recording script in '$TMPDIR'"
+
+if [ `tput cols` -ne 90 ]
+then 
+    echo "'tput cols' says that your terminal is not 90 columns wide: `tput cols`"
+    exit 1
+fi
+
+if [ `tput lines` -ne 26 ]
+then 
+    echo "'tput lines' says that your terminal is not 26 lines tall: `tput lines`"
+    exit 1
+fi
+
 
 rm $OUTDIR/*.cast
 
