@@ -143,6 +143,7 @@ repo_setup(){
 }
 
 cci_project_init(){
+    comment "We'll ask CCI to set up a project with most options 'defaulted'"
     fakedo "cci project init"
 
     pretend_interact "$ESC[34m# Project Info$RESET
@@ -243,6 +244,7 @@ secretly_deploy_from_other_repo(){
 }
 
 retrieve_changes(){
+    typedo "cci org default dev"
     comment "Food banks need to track deliveries. So offscreen we created Delivery__c and Delivery_Item__c using Salesforce's Setup UI."
     comment "Now we want to pull those changes into git. We'll start by looking for a task that can summarize our org changes. "
     comment "CCI can list all of its available tasks:"
@@ -276,8 +278,10 @@ fake_populate_data(){
 
 extract_dataset_from_org(){
     comment "We created some records off-screen. Let's pull them down and use them as sample data."
-    comment "First we generate a mapping file:"
+    comment "CumulusCI uses a mapping file to figure out which objects and fields to extract and load."
+    comment "Rather than write one from scratch, though, we can also ask CumulusCI to infer one from our org:"
     typedo 'cci task info generate_dataset_mapping | head'
+    comment "Looks useful? Let's run it:"
     typedo 'cci task run generate_dataset_mapping'
     comment "Then we extract the actual data:"
     typedo 'cci task run extract_dataset'
@@ -300,7 +304,9 @@ change_qa_org_flow(){
     comment "We should check whether the qa_org flow will load the dataset. Test data is helpful for QA testers!"
     typedo 'cci flow info qa_org'
     comment "It turns out no: load_dataset is not one of the steps in the flow"
-    comment "Let's change the flow by editing cumulusci.yml ."
+    comment "The flow is generated in two different places. CumulusCI has a bunch of steps built-in to it."
+    comment "We can also extend them in our own cumulusci.yml"
+    comment "Let's change the flow (through its config_qa subflow)by editing cumulusci.yml ."
     fakedo "vim cumulusci.yml"
     sleep $shortpause
     vim cumulusci.yml -c "source ../append_task_script.vim"
