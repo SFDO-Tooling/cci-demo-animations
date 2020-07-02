@@ -1,0 +1,374 @@
+   ____                 _                         _         _                 
+  / ___|  _   _   ___  | |_    ___    _ __ ___   (_)  ____ (_)  _ __     __ _ 
+ | |     | | | | / __| | __|  / _ \  | '_ ` _ \  | | |_  / | | | '_ \   / _` |
+ | |___  | |_| | \__ \ | |_  | (_) | | | | | | | | |  / /  | | | | | | | (_| |
+  \____|  \__,_| |___/  \__|  \___/  |_| |_| |_| |_| /___| |_| |_| |_|  \__, |
+                                                                        |___/ 
+  _____   _                          
+ |  ___| | |   ___   __      __  ___ 
+ | |_    | |  / _ \  \ \ /\ / / / __|
+ |  _|   | | | (_) |  \ V  V /  \__ \
+ |_|     |_|  \___/    \_/\_/   |___/
+                                     
+
+$ # Let's start working with a different org, as a QA person might
+
+$ cci org default qa
+qa is now the default org
+
+$ # We should check whether the qa_org flow will load the dataset. Test data is helpful for QA testers!
+
+$ cci flow info qa_org
+Description: Set up an org as a QA environment for unmanaged metadata
+1) flow: dependencies [from current folder]
+    1) task: update_dependencies
+    2) task: deploy_pre
+2) flow: deploy_unmanaged
+    0) task: dx_convert_from
+       when: project_config.project__source_format == "sfdx" and not org_config.scratch
+    1) task: unschedule_apex
+    2) task: update_package_xml
+       when: project_config.project__source_format != "sfdx" or not org_config.scratch
+    3) task: deploy
+       when: project_config.project__source_format != "sfdx" or not org_config.scratch
+    3.1) task: dx_push
+         when: project_config.project__source_format == "sfdx" and org_config.scratch
+    4) task: uninstall_packaged_incremental
+       when: project_config.project__source_format != "sfdx" or not org_config.scratch
+3) flow: config_qa
+    1) task: deploy_post
+    2) task: update_admin_profile
+4) task: snapshot_changes
+
+$ # It turns out no: load_dataset is not one of the steps in the flow
+
+$ # Let's change the flow by editing cumulusci.yml .
+
+$ vim cumulusci.yml
+="cumulusci.yml" 23L, 527Cminimum_cumulusci_version: '3.13.2'
+project:
+    name: Food-Bank
+    package:name:  Food-Bankapi_version: '48.0'
+    source_format: sfdx
+
+tasks:
+    robot:options:suites: robot/Food-Bank/testsoptions:outputdir: robot/Food-Bank/resultsrobot_testdoc:options:path: robot/Food-Bank/testsoutput: robot/Food-Bank/doc/Food-Bank_tests.htmlrun_tests:options:required_org_code_coverage_percent: 75
+~                                                                                                                      ~                                                                                                                      ~                                                                                                                      ~                                                                                                                      ~                                                                                                                      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Change config_qa flow to include load_dataset step
+flows:
+config_qa:
+
+steps:
+
+3:
+task:
+load_dataset
+
+"cumulusci.yml" 33L, 672C written
+>        H        H        H        H        H        H        H        H        H        H        H        H        H        Hc>
+$ # Let's save our work
+
+$ git add cumulusci.yml
+
+$ git commit -m "Added to qa_org flow"
+[master a7df7d7] Added to qa_org flow
+ 1 file changed, 10 insertions(+)
+
+$ cci flow info qa_org
+Description: Set up an org as a QA environment for unmanaged metadata
+1) flow: dependencies [from current folder]
+    1) task: update_dependencies
+    2) task: deploy_pre
+2) flow: deploy_unmanaged
+    0) task: dx_convert_from
+       when: project_config.project__source_format == "sfdx" and not org_config.scratch
+    1) task: unschedule_apex
+    2) task: update_package_xml
+       when: project_config.project__source_format != "sfdx" or not org_config.scratch
+    3) task: deploy
+       when: project_config.project__source_format != "sfdx" or not org_config.scratch
+    3.1) task: dx_push
+         when: project_config.project__source_format == "sfdx" and org_config.scratch
+    4) task: uninstall_packaged_incremental
+       when: project_config.project__source_format != "sfdx" or not org_config.scratch
+3) flow: config_qa
+    1) task: deploy_post
+    2) task: update_admin_profile
+    3) task: load_dataset
+4) task: snapshot_changes
+
+$ # Now step 3.3 is load_dataset! We're ready for testing!
+
+$ # We could also have created a brand new flow, or new tasks.
+
+$ cci flow run qa_org
+2020-06-23 09:42:19: ============================================================
+2020-06-23 09:42:19: Initializing flow: FlowCoordinator (qa_org)
+2020-06-23 09:42:19: Set up an org as a QA environment for unmanaged metadata
+2020-06-23 09:42:19: ============================================================
+2020-06-23 09:42:19: 
+2020-06-23 09:42:19: Verifying and refreshing credentials for the specified org: qa.
+2020-06-23 09:42:19: Creating scratch org with command: sfdx force:org:create -f orgs/dev.json --targetdevhubusername pprescod.devhub@salesforce.org -n --durationdays 7 -a "Food-Bank__qa" -s -w 120 adminEmail="pprescod@salesforce.com" 
+2020-06-23 09:42:42: Successfully created scratch org: 00D1F000000ID68UAG, username: test-cvwtp8iqxyb3@example.com
+2020-06-23 09:42:42: Generating scratch org user password with command: sfdx force:user:password:generate -u test-cvwtp8iqxyb3@example.com
+2020-06-23 09:42:45: Getting scratch org info from Salesforce DX
+2020-06-23 09:42:48: Org info has changed, updating org in keychain
+2020-06-23 09:42:48: ------------------------------------------------------------
+2020-06-23 09:42:48: Organization:
+2020-06-23 09:42:48:   Username: test-cvwtp8iqxyb3@example.com
+2020-06-23 09:42:48:     Org Id: 00D1F000000ID68
+2020-06-23 09:42:48: ------------------------------------------------------------
+2020-06-23 09:42:48: 
+2020-06-23 09:42:48: ------------------------------------------------------------
+2020-06-23 09:42:48: Steps:
+2020-06-23 09:42:48: Description: Set up an org as a QA environment for unmanaged metadata
+2020-06-23 09:42:48: 1) flow: dependencies [from current folder]
+2020-06-23 09:42:48:     1) task: update_dependencies
+2020-06-23 09:42:48:     2) task: deploy_pre
+2020-06-23 09:42:48: 2) flow: deploy_unmanaged
+2020-06-23 09:42:48:     0) task: dx_convert_from
+2020-06-23 09:42:48:        when: project_config.project__source_format == "sfdx" and not org_config.scratch
+2020-06-23 09:42:48:     1) task: unschedule_apex
+2020-06-23 09:42:48:     2) task: update_package_xml
+2020-06-23 09:42:48:        when: project_config.project__source_format != "sfdx" or not org_config.scratch
+2020-06-23 09:42:48:     3) task: deploy
+2020-06-23 09:42:48:        when: project_config.project__source_format != "sfdx" or not org_config.scratch
+2020-06-23 09:42:48:     3.1) task: dx_push
+2020-06-23 09:42:48:          when: project_config.project__source_format == "sfdx" and org_config.scratch
+2020-06-23 09:42:48:     4) task: uninstall_packaged_incremental
+2020-06-23 09:42:48:        when: project_config.project__source_format != "sfdx" or not org_config.scratch
+2020-06-23 09:42:48: 3) flow: config_qa
+2020-06-23 09:42:48:     1) task: deploy_post
+2020-06-23 09:42:48:     2) task: update_admin_profile
+2020-06-23 09:42:48:     3) task: load_dataset
+2020-06-23 09:42:48: 4) task: snapshot_changes
+2020-06-23 09:42:48: ------------------------------------------------------------
+2020-06-23 09:42:48: 
+2020-06-23 09:42:48: Starting execution
+2020-06-23 09:42:48: ============================================================
+2020-06-23 09:42:48: 
+2020-06-23 09:42:48: ------------------------------------------------------------
+2020-06-23 09:42:48: Running task: update_dependencies
+2020-06-23 09:42:48: ------------------------------------------------------------
+2020-06-23 09:42:48: 
+2020-06-23 09:42:48: Options:
+2020-06-23 09:42:48:   namespaced_org: False
+2020-06-23 09:42:48:   purge_on_delete: True
+2020-06-23 09:42:48:   include_beta: False
+2020-06-23 09:42:48:   allow_newer: True
+2020-06-23 09:42:48:   allow_uninstalls: False
+2020-06-23 09:42:48:   security_type: FULL
+2020-06-23 09:42:48: Beginning task: UpdateDependencies
+2020-06-23 09:42:48: 
+2020-06-23 09:42:48: Project has no dependencies, doing nothing
+2020-06-23 09:42:48: ------------------------------------------------------------
+2020-06-23 09:42:48: Running task: deploy_pre
+2020-06-23 09:42:48: ------------------------------------------------------------
+2020-06-23 09:42:48: 
+2020-06-23 09:42:48: Options:
+2020-06-23 09:42:48:   path: unpackaged/pre
+2020-06-23 09:42:48: Beginning task: DeployBundles
+2020-06-23 09:42:48: 
+2020-06-23 09:42:48: Deploying all metadata bundles in path /private/tmp/cci-demo/Food-Bank/unpackaged/pre
+2020-06-23 09:42:48: Path /private/tmp/cci-demo/Food-Bank/unpackaged/pre not found, skipping
+2020-06-23 09:42:48: Skipping task dx_convert_from (skipped unless project_config.project__source_format == "sfdx" and not org_config.scratch)
+2020-06-23 09:42:48: ------------------------------------------------------------
+2020-06-23 09:42:48: Running task: unschedule_apex
+2020-06-23 09:42:48: ------------------------------------------------------------
+2020-06-23 09:42:48: 
+2020-06-23 09:42:48: Options:
+2020-06-23 09:42:48:   apex: for (CronTrigger t : [SELECT Id FROM CronTrigger]) { System.abortJob(t.Id); }
+2020-06-23 09:42:48: Beginning task: AnonymousApexTask
+2020-06-23 09:42:48: 
+2020-06-23 09:42:48: Executing anonymous Apex
+2020-06-23 09:42:48: Anonymous Apex Success
+2020-06-23 09:42:48: Skipping task update_package_xml (skipped unless project_config.project__source_format != "sfdx" or not org_config.scratch)
+2020-06-23 09:42:48: Skipping task deploy (skipped unless project_config.project__source_format != "sfdx" or not org_config.scratch)
+2020-06-23 09:42:48: ------------------------------------------------------------
+2020-06-23 09:42:48: Running task: dx_push
+2020-06-23 09:42:48: ------------------------------------------------------------
+2020-06-23 09:42:48: 
+2020-06-23 09:42:48: Running command:  sfdx force:source:push -u test-cvwtp8iqxyb3@example.com
+2020-06-23 09:42:48: Options:
+2020-06-23 09:42:48:   command: sfdx force:source:push -u test-cvwtp8iqxyb3@example.com
+2020-06-23 09:42:48: Beginning task: SFDXOrgTask
+2020-06-23 09:42:48: 
+2020-06-23 09:42:48: Running command: sfdx force:source:push -u test-cvwtp8iqxyb3@example.com
+2020-06-23 09:42:50: Job ID | 0Af1F00001GP17JSAT
+2020-06-23 09:42:59: === Pushed Source
+2020-06-23 09:42:59: STATE  FULL NAME                                 TYPE          PROJECT PATH
+2020-06-23 09:42:59: ─────  ────────────────────────────────────────  ────────────  ─────────────────────────────────────────────────────────────────────────────────────────────
+2020-06-23 09:42:59: Add    Delivery_Item__c-Delivery Item Layout     Layout        force-app/main/default/layouts/Delivery_Item__c-Delivery Item Layout.layout-meta.xml
+2020-06-23 09:42:59: Add    Delivery__c-Delivery Layout               Layout        force-app/main/default/layouts/Delivery__c-Delivery Layout.layout-meta.xml
+2020-06-23 09:42:59: Add    Delivery_Item__c                          CustomObject  force-app/main/default/objects/Delivery_Item__c/Delivery_Item__c.object-meta.xml
+2020-06-23 09:42:59: Add    Delivery_Item__c.Delivery__c              CustomField   force-app/main/default/objects/Delivery_Item__c/fields/Delivery__c.field-meta.xml
+2020-06-23 09:42:59: Add    Delivery_Item__c.Description__c           CustomField   force-app/main/default/objects/Delivery_Item__c/fields/Description__c.field-meta.xml
+2020-06-23 09:42:59: Add    Delivery_Item__c.DjFoodBankID__c          CustomField   force-app/main/default/objects/Delivery_Item__c/fields/DjFoodBankID__c.field-meta.xml
+2020-06-23 09:42:59: Add    Delivery_Item__c.Storage_Requirements__c  CustomField   force-app/main/default/objects/Delivery_Item__c/fields/Storage_Requirements__c.field-meta.xml
+2020-06-23 09:42:59: Add    Delivery__c                               CustomObject  force-app/main/default/objects/Delivery__c/Delivery__c.object-meta.xml
+2020-06-23 09:42:59: Add    Delivery__c.DjFoodBankID__c               CustomField   force-app/main/default/objects/Delivery__c/fields/DjFoodBankID__c.field-meta.xml
+2020-06-23 09:42:59: Add    Delivery__c.Notes__c                      CustomField   force-app/main/default/objects/Delivery__c/fields/Notes__c.field-meta.xml
+2020-06-23 09:42:59: Add    Delivery__c.Scheduled_Date__c             CustomField   force-app/main/default/objects/Delivery__c/fields/Scheduled_Date__c.field-meta.xml
+2020-06-23 09:42:59: Add    Delivery__c.Status__c                     CustomField   force-app/main/default/objects/Delivery__c/fields/Status__c.field-meta.xml
+2020-06-23 09:42:59: Add    Delivery__c.Supplier__c                   CustomField   force-app/main/default/objects/Delivery__c/fields/Supplier__c.field-meta.xml
+2020-06-23 09:42:59: Add    Delivery__c.All                           ListView      force-app/main/default/objects/Delivery__c/listViews/All.listView-meta.xml
+2020-06-23 09:42:59: Add    Delivery__c                               CustomTab     force-app/main/default/tabs/Delivery__c.tab-meta.xml
+2020-06-23 09:43:00: Skipping task uninstall_packaged_incremental (skipped unless project_config.project__source_format != "sfdx" or not org_config.scratch)
+2020-06-23 09:43:00: ------------------------------------------------------------
+2020-06-23 09:43:00: Running task: deploy_post
+2020-06-23 09:43:00: ------------------------------------------------------------
+2020-06-23 09:43:00: 
+2020-06-23 09:43:00: Options:
+2020-06-23 09:43:00:   path: unpackaged/post
+2020-06-23 09:43:00:   unmanaged: True
+2020-06-23 09:43:00: Beginning task: DeployBundles
+2020-06-23 09:43:00: 
+2020-06-23 09:43:00: Deploying all metadata bundles in path /private/tmp/cci-demo/Food-Bank/unpackaged/post
+2020-06-23 09:43:00: Path /private/tmp/cci-demo/Food-Bank/unpackaged/post not found, skipping
+2020-06-23 09:43:00: ------------------------------------------------------------
+2020-06-23 09:43:00: Running task: update_admin_profile
+2020-06-23 09:43:00: ------------------------------------------------------------
+2020-06-23 09:43:00: 
+2020-06-23 09:43:00: Options:
+2020-06-23 09:43:00:   managed: False
+2020-06-23 09:43:00:   namespaced_org: False
+2020-06-23 09:43:00:   include_packaged_objects: True
+2020-06-23 09:43:00: Beginning task: ProfileGrantAllAccess
+2020-06-23 09:43:00: 
+2020-06-23 09:43:00: Extracting existing metadata...
+2020-06-23 09:43:04: Pending
+2020-06-23 09:43:04: [Pending]: next check in 1 seconds
+2020-06-23 09:43:05: [Pending]: next check in 1 seconds
+2020-06-23 09:43:07: [Pending]: next check in 2 seconds
+2020-06-23 09:43:09: [Pending]: next check in 2 seconds
+2020-06-23 09:43:11: [Pending]: next check in 2 seconds
+2020-06-23 09:43:14: [Pending]: next check in 3 seconds
+2020-06-23 09:43:17: [Pending]: next check in 3 seconds
+2020-06-23 09:43:20: [Done]
+2020-06-23 09:43:24: Loading transformed metadata...
+2020-06-23 09:43:24: Beginning task: Deploy
+2020-06-23 09:43:24:        As user: test-cvwtp8iqxyb3@example.com
+2020-06-23 09:43:24:         In org: 00D1F000000ID68
+2020-06-23 09:43:24: 
+2020-06-23 09:43:24: Cleaning meta.xml files of packageVersion elements for deploy
+2020-06-23 09:43:24: Payload size: 4296 bytes
+2020-06-23 09:43:24: Pending
+2020-06-23 09:43:24: [InProgress]: Processing Type: Profile
+2020-06-23 09:43:26: [InProgress]: Processing Type: Profile
+2020-06-23 09:43:27: [InProgress]: Processing Type: Profile
+2020-06-23 09:43:28: [InProgress]: Processing Type: Profile
+2020-06-23 09:43:30: [Done]
+2020-06-23 09:43:31: [Success]: Succeeded
+2020-06-23 09:43:31: ------------------------------------------------------------
+2020-06-23 09:43:31: Running task: load_dataset
+2020-06-23 09:43:31: ------------------------------------------------------------
+2020-06-23 09:43:31: 
+2020-06-23 09:43:31: Options:
+2020-06-23 09:43:31:   mapping: datasets/mapping.yml
+2020-06-23 09:43:31:   sql_path: datasets/sample.sql
+2020-06-23 09:43:31:   ignore_row_errors: False
+2020-06-23 09:43:31: Beginning task: LoadData
+2020-06-23 09:43:31: 
+2020-06-23 09:43:31: Using in-memory SQLite database
+2020-06-23 09:43:31: Running step: Insert Account
+2020-06-23 09:43:33: Prepared 1 rows for insert to Account
+2020-06-23 09:43:33: Uploading batch 1
+2020-06-23 09:43:35: Waiting for job 7501F000003tilJQAQ (0/1 batches complete)
+2020-06-23 09:43:46: Waiting for job 7501F000003tilJQAQ (1/1 batches complete)
+2020-06-23 09:43:47: Job 7501F000003tilJQAQ finished with result: Success
+2020-06-23 09:43:48: Downloaded results for batch 7511F000003Qlx7QAC
+2020-06-23 09:43:48: Running post-load step: Update Account Dependencies After Insert Account
+2020-06-23 09:43:49: Prepared 0 rows for update to Account
+2020-06-23 09:43:50: Waiting for job 7501F000003tiliQAA (0/0 batches complete)
+2020-06-23 09:43:50: Job 7501F000003tiliQAA finished with result: Success
+2020-06-23 09:43:50: Running step: Insert Delivery__c
+2020-06-23 09:43:51: Prepared 1 rows for insert to Delivery__c
+2020-06-23 09:43:51: Uploading batch 1
+2020-06-23 09:43:52: Waiting for job 7501F000003til0QAA (1/1 batches complete)
+2020-06-23 09:43:52: Job 7501F000003til0QAA finished with result: Success
+2020-06-23 09:43:52: Downloaded results for batch 7511F000003Qm08QAC
+2020-06-23 09:43:52: Running step: Insert Delivery_Item__c
+2020-06-23 09:43:52: Prepared 2 rows for insert to Delivery_Item__c
+2020-06-23 09:43:52: Uploading batch 1
+2020-06-23 09:43:53: Waiting for job 7501F000003tilnQAA (1/1 batches complete)
+2020-06-23 09:43:54: Job 7501F000003tilnQAA finished with result: Success
+2020-06-23 09:43:54: Downloaded results for batch 7511F000003Qm0DQAS
+2020-06-23 09:43:54: ------------------------------------------------------------
+2020-06-23 09:43:54: Running task: snapshot_changes
+2020-06-23 09:43:54: ------------------------------------------------------------
+2020-06-23 09:43:54: 
+2020-06-23 09:43:54: Options:
+2020-06-23 09:43:55: Beginning task: SnapshotChanges
+2020-06-23 09:43:55: 
+
+
+
+$ # The QA org now has the captured metadata and dataset loaded automatically!
+
+$ # Now the QA rep can log in
+
+$ cci org browser
+# *** POOF: We're ready for testing -- with data -- in the Salesforce UI ***
+
+$ # Or -- if we've got chromedriver installed -- maybe we could let a robot do some of the testing in a web browser:
+
+$ cci task run robot
+2020-06-23 09:45:04: Getting scratch org info from Salesforce DX
+2020-06-23 09:45:07: Beginning task: Robot
+2020-06-23 09:45:07:        As user: test-cvwtp8iqxyb3@example.com
+2020-06-23 09:45:07:         In org: 00D1F000000ID68
+2020-06-23 09:45:07: 
+==============================================================================
+Tests                                                                         
+==============================================================================
+Tests.Create Contact                                                          
+==============================================================================
+Via API                                                               | PASS |
+------------------------------------------------------------------------------
+Via UI                                                                | PASS |
+------------------------------------------------------------------------------
+Tests.Create Contact                                                  | PASS |
+2 critical tests, 2 passed, 0 failed
+2 tests total, 2 passed, 0 failed
+==============================================================================
+Tests                                                                 | PASS |
+2 critical tests, 2 passed, 0 failed
+2 tests total, 2 passed, 0 failed
+==============================================================================
+Output:  /private/tmp/cci-demo/Food-Bank/robot/Food-Bank/results/output.xml
+Log:     /private/tmp/cci-demo/Food-Bank/robot/Food-Bank/results/log.html
+Report:  /private/tmp/cci-demo/Food-Bank/robot/Food-Bank/results/report.html
+
+
+  ____    _   _      _      _____     _      __  __   _ 
+ / ___|  | | | |    / \    |__  /    / \    |  \/  | | |
+ \___ \  | |_| |   / _ \     / /    / _ \   | |\/| | | |
+  ___) | |  _  |  / ___ \   / /_   / ___ \  | |  | | |_|
+ |____/  |_| |_| /_/   \_\ /____| /_/   \_\ |_|  |_| (_)
+                                                        
+
+$ (And of course, we can delete the org when we're done: 'cci org scratch_delete qa')
+
+$ # Thank you for watching this video series!
+

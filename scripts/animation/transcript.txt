@@ -1,0 +1,57 @@
+
+$ cat /tmp/cci-demo/cumulusci.yml
+
+"minimum_cumulusci_version:
+'3.13.2'"
+"project:"
+"name:
+Food-Bank"
+"package:"
+"name:
+Food-Bank"
+"api_version:
+'48.0'"
+"source_format:
+sfdx"
+""
+"tasks:"
+"robot:"
+"options:"
+"suites:
+robot/Food-Bank/tests"
+"options:"
+"outputdir:
+robot/Food-Bank/results"
+""
+"robot_testdoc:"
+"options:"
+"path:
+robot/Food-Bank/tests"
+"output:
+robot/Food-Bank/doc/Food-Bank_tests.html"
+""
+"run_tests:"
+"options:"
+"required_org_code_coverage_percent:
+75"
+""
+""
+ __        __         _                                       _           
+ \ \      / /   ___  | |   ___    ___    _ __ ___     ___    | |_    ___  
+  \ \ /\ / /   / _ \ | |  / __|  / _ \  | '_ ` _ \   / _ \   | __|  / _ \ 
+   \ V  V /   |  __/ | | | (__  | (_) | | | | | | | |  __/   | |_  | (_) |
+    \_/\_/     \___| |_|  \___|  \___/  |_| |_| |_|  \___|    \__|  \___/ 
+                                                                          
+  _     _                    _                                         __ 
+ | |_  | |__     ___      __| |   ___   _ __ ___     ___       ___    / _|
+ | __| | '_ \   / _ \    / _` |  / _ \ | '_ ` _ \   / _ \     / _ \  | |_ 
+ | |_  | | | | |  __/   | (_| | |  __/ | | | | | | | (_) |   | (_) | |  _|
+  \__| |_| |_|  \___|    \__,_|  \___| |_| |_| |_|  \___/     \___/  |_|  
+                                                                          
+   ____                               _                  ____   ___ 
+  / ___|  _   _   _ __ ___    _   _  | |  _   _   ___   / ___| |_ _|
+ | |     | | | | | '_ ` _ \  | | | | | | | | | | / __| | |      | | 
+ | |___  | |_| | | | | | | | | |_| | | | | |_| | \__ \ | |___   | | 
+  \____|  \__,_| |_| |_| |_|  \__,_| |_|  \__,_| |___/  \____| |___|
+                                                                    
+^C
