@@ -53,7 +53,7 @@ fi
 
 rm $OUTDIR/*.cast
 
-asciinema rec $OUTDIR/1_setup.cast -i 2.5 -c "bash $TMPDIR/animation.sh setup_video" 
-asciinema rec $OUTDIR/2_retrieve_changes.cast -i 2.5 -c "bash $TMPDIR/animation.sh retrieve_changes_video"
-asciinema rec $OUTDIR/3_populate_data.cast -i 2.5 -c "bash $TMPDIR/animation.sh populate_data_video"
-asciinema rec $OUTDIR/4_qa_org.cast -i 2.5 -c "bash $TMPDIR/animation.sh qa_org_video"
+asciinema rec $OUTDIR/1_setup.cast --idle-time-limit 2.5 --command "bash $TMPDIR/animation.sh setup_video" 
+asciinema rec $OUTDIR/2_retrieve_changes.cast --idle-time-limit 2.5 --command "bash $TMPDIR/animation.sh retrieve_changes_video"
+asciinema rec $OUTDIR/3_populate_data.cast --idle-time-limit 2.5 --command "bash $TMPDIR/animation.sh populate_data_video"
+asciinema rec $OUTDIR/4_qa_org.cast --idle-time-limit 2.5 --command "bash $TMPDIR/animation.sh qa_org_video"
