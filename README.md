@@ -8,6 +8,7 @@ You will need to:
     brew install asciinema
     brew install figlet
     brew install moreutils # for sponge
+    brew install sponge
 ```
 
 also: VIM, git, cci in path
