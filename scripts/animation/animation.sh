@@ -1,6 +1,10 @@
 
 set -e
 
+name=$0
+utils="$(dirname $name)/utils.sh"
+. $utils
+
 typingspeed=10
 shortpause=1
 mediumpause=2
@@ -52,7 +56,7 @@ populate_data_video(){
 qa_org_video(){
     banner "Customizing Flows"
     setup_everything_as_video_3_would
-    switch_to_qa_org
+    # switch_to_qa_org
     change_qa_org_flow
     run_qa_org_flow
     comment "Now the QA rep can log in"
@@ -65,66 +69,45 @@ qa_org_video(){
     comment "Thank you for watching this video series!"
 }
 
+snowfakery_video(){
+    banner "Faked Data with Snowfakery"
+    setup_everything_as_video_3_would
+    cci task run delete_data --org qa --objects "Entitlement,Account" > /dev/null
+    comment "Let's make some data with Snowfakery"
+    comment "We'll start with simple 'static' data"
+    comment "To do that, we will edit a 'recipe' in any text editor or IDE"
+    comment "Most people use VSCode, but vim is easier for this demo."
+
+    append_lines datasets/recipe.yml ../recipe_1.txt
+    comment "Let's do a 'dry run' without CumulusCI or Salesforce"
+    typedo "snowfakery datasets/recipe.yml"
+    comment "Great! Now let's try a real data load into the org 'qa' using CumulusCI (cci) "
+    typedo "cci task run snowfakery --recipe datasets/recipe.yml --org qa"
+    comment "Let's see if it worked! CCI can pull a list of all accounts from the org."
+    typedo 'cci task run query --object Account --query "Select Id,Name from Account" --result_file Accounts.csv --org qa'
+    typedo 'cat Accounts.csv'
+    comment "Now let's add some randomized contacts"
+    append_lines datasets/recipe.yml ../recipe_2.txt
+    comment "Dry run, then loading into CCI"
+    typedo "snowfakery --recipe datasets/recipe.yml"
+    typedo "cci task run snowfakery --recipe datasets/recipe.yml --org qa"
+    comment "Let's check those too."
+    typedo 'cci task run query --object Contact --query "Select Id,FirstName,LastName,MailingCountry from Contact" --result_file Contacts.csv --org qa'
+    typedo 'cat Contacts.csv'
+    comment 'Custom objects and fields are just as easy as to generate.'
+    # etc. etc.
+    comment 'Relationships are an important aspect too!'
+    banner "BOOYAH!"
+}
+
 everything(){
     setup_video
     retrieve_changes_video
     populate_data_video
     qa_org_video
+    snowfakery_video
 }
 
-prompt(){
-    printf "$PS1"
-}
-
-faketype(){
-    echo  "$1" | pv -qL $[$typingspeed+(-2 + RANDOM%5)]
-    /bin/sleep $shortpause
-}
-
-comment(){
-    command="# $1"
-    /bin/sleep $shortpause
-    prompt
-    printf "$ESC[32;1m"  
-    echo "$command" | fold -s -w 80 | $slowtype
-    printf "$RESET"
-    /bin/sleep $shortpause
-}
-
-poof(){
-    command="# *** POOF: $1 ***"
-    printf "$ESC[35;1m"  
-    echo "$command" | $slowtype
-    printf "$RESET"
-    /bin/sleep $shortpause
-}
-
-fakedo(){
-    prompt
-    faketype "$1"
-}
-
-typedo (){
-    command=$1
-    prompt
-    echo -n $command | $slowtype
-    /bin/sleep $shortpause
-    echo
-    # $REPLY is a magic variable set by read
-    eval $command | sponge | (while read; do printf  -- "%s\n" "$REPLY"; sleep $scrolllinepause; done)
-}
-  
-pretend_interact(){
-    echo -en $1 | fold -s -w 80
-    echo -n " "
-    /bin/sleep $longpause
-    faketype $2 
-    echo 
-}
-
-banner (){
-    figlet -W $1
-}
 
 
 intro(){
@@ -199,6 +182,7 @@ secretly_copy_files(){
     # cp ../cumulusci.yml cumulusci.yml
     git init >> ../secret.log || true   # ignore failure
     cp -rf ../CCI-Food-Bank/.gitignore .
+    rm cumulusci.yml
     echo -e "Food-Bank\nFood-Bank\n\n\n\n\n\n\n\n\n\n\n\n\n\n" | cci project init >> ../secret.log | true   # ignore failure
     # rm -rf robot/CCI-Food-Bank
 }
@@ -300,16 +284,24 @@ switch_to_qa_org(){
     typedo 'cci org default qa'
 }
 
+append_lines(){
+    local filename="$1"
+    local newtext="$2"
+    local function_call="call AppendLines(readfile('$2'))"
+
+    vim $filename -c "source ../append_util.vim" -c "$function_call"
+}
+
 change_qa_org_flow(){
     comment "We should check whether the qa_org flow will load the dataset. Test data is helpful for QA testers!"
     typedo 'cci flow info qa_org'
     comment "It turns out no: load_dataset is not one of the steps in the flow"
     comment "The flow is generated in two different places. CumulusCI has a bunch of steps built-in to it."
     comment "We can also extend them in our own cumulusci.yml"
-    comment "Let's change the flow (through its config_qa subflow)by editing cumulusci.yml ."
+    comment "Let's change the flow (through its config_qa subflow) by editing cumulusci.yml ."
     fakedo "vim cumulusci.yml"
     sleep $shortpause
-    vim cumulusci.yml -c "source ../append_task_script.vim"
+    append_lines cumulusci.yml "../append_task_code.txt"
     reset
     comment "Let's save our work"
     typedo "git add cumulusci.yml"
@@ -328,7 +320,8 @@ setup_files(){
     # verify we're in the right directory and have the right helper files available
     ls CCI-Food-Bank/ > /dev/null
     ls "cumulusci.yml" > /dev/null
-    ls "append_task_script.vim" > /dev/null
+    ls "append_util.vim" > /dev/null
+    ls "append_task_code.txt" > /dev/null
 
     mkdir -p Food-Bank
     cd Food-Bank
