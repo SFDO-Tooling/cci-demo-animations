@@ -1,0 +1,434 @@
+   ____                               _                  ____   ___ 
+  / ___|  _   _   _ __ ___    _   _  | |  _   _   ___   / ___| |_ _|
+ | |     | | | | | '_ ` _ \  | | | | | | | | | | / __| | |      | | 
+ | |___  | |_| | | | | | | | | |_| | | | | |_| | \__ \ | |___   | | 
+  \____|  \__,_| |_| |_| |_|  \__,_| |_|  \__,_| |___/  \____| |___|
+                                                                    
+
+$ # Let's make a project from scratch
+
+$ mkdir Food-Bank
+
+$ cd Food-Bank
+
+$ git init
+Initialized empty Git repository in /private/tmp/cci-demo/Food-Bank/.git/
+
+$ cci project init
+# Project Info 
+The following prompts will collect general information about the project 
+ 
+Enter the project name. The name is usually the same as your repository name. 
+NOTE: Do not use spaces in the project name! 
+Project Name [Project]: Food-Bank
+
+CumulusCI uses an unmanaged package as a container for your project's metadata. 
+Enter the name of the package you want to use. 
+Package Name [Project]: Food-Bank
+
+
+Is this a managed package project? [y/N]: N
+
+
+Salesforce API Version [48.0]: 
+
+Salesforce metadata can be stored using Metadata API format or DX source format. Which do you want to use? 
+Source format (sfdx, mdapi) [sfdx]: sfdx
+
+ # Extend Project 
+CumulusCI makes it easy to build extensions of other projects configured for CumulusCI like Salesforce.org's NPSP and EDA. If you are building an extension of another project using CumulusCI and have access to its Github repository, use this section to configure this project as an extension. 
+Are you extending another CumulusCI project such as NPSP or EDA? [y/N]: 
+
+ # Git Configuration 
+ 
+CumulusCI assumes your default branch is master, your feature branches are named feature/*, your beta release tags are named beta/*, and your release tags are release/*. If you want to use a different branch/tag naming scheme, you can configure the overrides here. Otherwise, just accept the defaults. Default Branch [master]: 
+
+Feature Branch Prefix [feature/]: 
+
+Beta Tag Prefix [beta/]: 
+
+Release Tag Prefix [release/]: 
+
+# Apex Tests Configuration 
+The CumulusCI Apex test runner uses a SOQL where clause to select which tests to run. Enter the SOQL pattern to use to match test class names. Test Name Match [%_TEST%]: 
+
+Do you want to check Apex code coverage when tests are run? [Y/n]: Y
+
+Minimum code coverage percentage [75]: 
+
+Your project is now initialized for use with CumulusCI
+
+
+$ ls
+README.md
+cumulusci.yml
+datasets
+force-app
+orgs
+robot
+sfdx-project.json
+
+$ git add --all
+
+$ git status
+On branch master
+
+No commits yet
+
+Changes to be committed:
+  (use "git rm --cached <file>..." to unstage)
+	new file:   .github/PULL_REQUEST_TEMPLATE.md
+	new file:   .gitignore
+	new file:   README.md
+	new file:   cumulusci.yml
+	new file:   datasets/mapping.yml
+	new file:   orgs/beta.json
+	new file:   orgs/dev.json
+	new file:   orgs/feature.json
+	new file:   orgs/release.json
+	new file:   robot/Food-Bank/tests/create_contact.robot
+	new file:   sfdx-project.json
+
+
+$ git commit -m "Initial Configuration for Food-Bank App"
+[master (root-commit) e6f4863] Initial Configuration for Food-Bank App
+ 11 files changed, 258 insertions(+)
+ create mode 100644 .github/PULL_REQUEST_TEMPLATE.md
+ create mode 100644 .gitignore
+ create mode 100644 README.md
+ create mode 100644 cumulusci.yml
+ create mode 100644 datasets/mapping.yml
+ create mode 100644 orgs/beta.json
+ create mode 100644 orgs/dev.json
+ create mode 100644 orgs/feature.json
+ create mode 100644 orgs/release.json
+ create mode 100644 robot/Food-Bank/tests/create_contact.robot
+ create mode 100644 sfdx-project.json
+
+$ # CumulusCI's main configuration file is cumulusci.yml.
+
+$ # Let's look at the one 'cci project init' created for us
+
+$ vim cumulusci.yml
+="cumulusci.yml" 23L, 527Cminimum_cumulusci_version: '3.13.2'
+project:
+    name: Food-Bank
+    package:name:  Food-Bankapi_version: '48.0'
+    source_format: sfdx
+
+tasks:
+    robot:options:suites: robot/Food-Bank/testsoptions:outputdir: robot/Food-Bank/resultsrobot_testdoc:options:path: robot/Food-Bank/testsoutput: robot/Food-Bank/doc/Food-Bank_tests.htmlrun_tests:options:required_org_code_coverage_percent: 75
+~                                                                                                                      ~                                                                                                                      ~                                                                                                                      ~                                                                                                                      ~                                                                                                                      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+>
+$ # A newly initialized CCI project includes several scratch org templates, ready to go.
+
+$ cci org list
+(0lScratch Orgs(0qqqqqqqwqqqqqqwqqqqqqqqqwqqqqqqqqqwqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk
+(0x Name    (0x Default (0x Days (0x Expired (0x Config  (0x Domain                          (0x
+(0tqqqqqqqqqnqqqqqqqqqnqqqqqqnqqqqqqqqqnqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x beta    (0x         (0x 1    (0x ✘       (0x beta    (0x                                 (0x
+(0tqqqqqqqqqnqqqqqqqqqnqqqqqqnqqqqqqqqqnqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x dev     (0x         (0x 7    (0x ✘       (0x dev     (0x business-saas-9027-dev-ed.cs90  (0x
+(0tqqqqqqqqqnqqqqqqqqqnqqqqqqnqqqqqqqqqnqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x feature (0x         (0x 1    (0x ✘       (0x feature (0x                                 (0x
+(0tqqqqqqqqqnqqqqqqqqqnqqqqqqnqqqqqqqqqnqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x qa      (0x         (0x 7    (0x ✘       (0x qa      (0x fun-innovation-3189-dev-ed.cs90 (0x
+(0tqqqqqqqqqnqqqqqqqqqnqqqqqqnqqqqqqqqqnqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x release (0x         (0x 1    (0x ✘       (0x release (0x                                 (0x
+(0mqqqqqqqqqvqqqqqqqqqvqqqqqqvqqqqqqqqqvqqqqqqqqqvqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj
+
+(0lConnected Orgs(0qqwqqqqqqqqqqwqqqqqqqqqk
+(0x Name (0x Default (0x Username (0x Expires (0x
+(0mqqqqqqvqqqqqqqqqvqqqqqqqqqqvqqqqqqqqqj
+
+
+$ # We can make dev the default scratch org for convenience
+
+$ cci org default dev
+dev is now the default org
+
+$ # We can spin up a scratch org with a flow, which configures it, loads metadata and data
+
+$ # Let's see what flows we have available...
+
+$ cci flow list
+(0lFlows(0qqqqqqqqqqqqqqqqqqqwqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk
+(0x Name                   (0x Description                                                                                (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x ci_beta                (0x Install the latest beta version and runs apex tests from the managed package               (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x ci_feature             (0x Prepare an unmanaged metadata test org and run apex tests.  Intended for use against       (0x
+(0x                        (0x feature branch commits.                                                                    (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x ci_feature_beta_deps   (0x Install the latest beta version of dependencies and run apex tests.                        (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x ci_master              (0x Deploy the package metadata to the packaging org and prepare for managed package version   (0x
+(0x                        (0x upload.  Intended for use against master branch commits.                                   (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x ci_release             (0x Install a production release version and runs tests from the managed package               (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x config_apextest        (0x Configure an org to run apex tests after package metadata is deployed                      (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x config_dev             (0x Configure an org for use as a dev org after package metadata is deployed                   (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x config_managed         (0x Configure an org for use as a dev org after package metadata is deployed                   (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x config_packaging       (0x Configure packaging org for upload after package metadata is deployed                      (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x config_qa              (0x Configure an org for use as a QA org after package metadata is deployed                    (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x config_regression      (0x Configure an org for QA regression after the package is installed                          (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x dependencies           (0x Deploy dependencies to prepare the org environment for the package metadata                (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x beta_dependencies      (0x Deploy the latest (beta) version of dependencies to prepare the org environment for the    (0x
+(0x                        (0x package metadata                                                                           (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x deploy_unmanaged       (0x Deploy the unmanaged metadata from the package                                             (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x deploy_unmanaged_ee    (0x Deploy the unmanaged metadata from the package to an Enterprise Edition org                (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x deploy_packaging       (0x Process and deploy the package metadata to the packaging org                               (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x dev_org                (0x Set up an org as a development environment for unmanaged metadata                          (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x dev_org_beta_deps      (0x Set up an org as a development environment for unmanaged metadata based on the latest      (0x
+(0x                        (0x dependencies (including betas).                                                            (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x dev_org_namespaced     (0x Set up a namespaced scratch org as a development environment for unmanaged metadata        (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x qa_org                 (0x Set up an org as a QA environment for unmanaged metadata                                   (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x regression_org         (0x Simulates an org that has been upgraded from the latest release of to the current beta and (0x
+(0x                        (0x its dependencies, but deploys any unmanaged metadata from the current beta.                (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x uninstall_managed      (0x Uninstall the installed managed version of the package.  Run this before install_beta or   (0x
+(0x                        (0x install_prod if a version is already installed in the target org.                          (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x install_beta           (0x Install and configure the latest beta version                                              (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x install_prod           (0x Install and configure the latest production version                                        (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x install_prod_no_config (0x Install but do not configure the latest production version                                 (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x install_regression     (0x Install the latest beta dependencies and upgrade to the latest beta version from the most  (0x
+(0x                        (0x recent production version                                                                  (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x release_beta           (0x Upload and release a beta version of the metadata currently in packaging                   (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x release_production     (0x Upload and release a production version of the metadata currently in packaging             (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x retrieve_scratch       (0x Retrieves declarative changes made in a scratch org and converts to src directory          (0x
+(0tqqqqqqqqqqqqqqqqqqqqqqqqnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu
+(0x unmanaged_ee           (0x Deploy the unmanaged package metadata and all dependencies to the target EE org            (0x
+(0mqqqqqqqqqqqqqqqqqqqqqqqqvqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj
+
+Use cci flow info <flow_name> to get more information about a flow.
+
+$ # That's a lot of built-in flows! Let's look closer at one of them.
+
+$ cci flow info dev_org
+Description: Set up an org as a development environment for unmanaged metadata
+1) flow: dependencies [from current folder]
+    1) task: update_dependencies
+    2) task: deploy_pre
+2) flow: deploy_unmanaged
+    0) task: dx_convert_from
+       when: project_config.project__source_format == "sfdx" and not org_config.scratch
+    1) task: unschedule_apex
+    2) task: update_package_xml
+       when: project_config.project__source_format != "sfdx" or not org_config.scratch
+    3) task: deploy
+       when: project_config.project__source_format != "sfdx" or not org_config.scratch
+    3.1) task: dx_push
+         when: project_config.project__source_format == "sfdx" and org_config.scratch
+    4) task: uninstall_packaged_incremental
+       when: project_config.project__source_format != "sfdx" or not org_config.scratch
+3) flow: config_dev
+    1) task: deploy_post
+    2) task: update_admin_profile
+4) task: snapshot_changes
+
+$ # dev_org looks like it will do the things we want.
+
+$ cci flow run dev_org
+2020-06-23 09:27:10: ============================================================
+2020-06-23 09:27:10: Initializing flow: FlowCoordinator (dev_org)
+2020-06-23 09:27:10: Set up an org as a development environment for unmanaged metadata
+2020-06-23 09:27:10: ============================================================
+2020-06-23 09:27:10: 
+2020-06-23 09:27:10: Verifying and refreshing credentials for the specified org: dev.
+2020-06-23 09:27:10: Creating scratch org with command: sfdx force:org:create -f orgs/dev.json --targetdevhubusername pprescod.devhub@salesforce.org -n --durationdays 7 -a "None__dev" -s -w 120 adminEmail="pprescod@salesforce.com" 
+2020-06-23 09:27:34: Successfully created scratch org: 00D63000000AYLBEA4, username: test-bp0novuz7vyq@example.com
+2020-06-23 09:27:34: Skipping resetting password since last attempt failed
+2020-06-23 09:27:34: Getting scratch org info from Salesforce DX
+2020-06-23 09:27:37: Org info has changed, updating org in keychain
+2020-06-23 09:27:37: ------------------------------------------------------------
+2020-06-23 09:27:37: Organization:
+2020-06-23 09:27:37:   Username: test-bp0novuz7vyq@example.com
+2020-06-23 09:27:37:     Org Id: 00D63000000AYLB
+2020-06-23 09:27:37: ------------------------------------------------------------
+2020-06-23 09:27:37: 
+2020-06-23 09:27:37: ------------------------------------------------------------
+2020-06-23 09:27:37: Steps:
+2020-06-23 09:27:37: Description: Set up an org as a development environment for unmanaged metadata
+2020-06-23 09:27:37: 1) flow: dependencies [from current folder]
+2020-06-23 09:27:37:     1) task: update_dependencies
+2020-06-23 09:27:37:     2) task: deploy_pre
+2020-06-23 09:27:37: 2) flow: deploy_unmanaged
+2020-06-23 09:27:37:     0) task: dx_convert_from
+2020-06-23 09:27:37:        when: project_config.project__source_format == "sfdx" and not org_config.scratch
+2020-06-23 09:27:37:     1) task: unschedule_apex
+2020-06-23 09:27:37:     2) task: update_package_xml
+2020-06-23 09:27:37:        when: project_config.project__source_format != "sfdx" or not org_config.scratch
+2020-06-23 09:27:37:     3) task: deploy
+2020-06-23 09:27:37:        when: project_config.project__source_format != "sfdx" or not org_config.scratch
+2020-06-23 09:27:37:     3.1) task: dx_push
+2020-06-23 09:27:37:          when: project_config.project__source_format == "sfdx" and org_config.scratch
+2020-06-23 09:27:37:     4) task: uninstall_packaged_incremental
+2020-06-23 09:27:37:        when: project_config.project__source_format != "sfdx" or not org_config.scratch
+2020-06-23 09:27:37: 3) flow: config_dev
+2020-06-23 09:27:37:     1) task: deploy_post
+2020-06-23 09:27:37:     2) task: update_admin_profile
+2020-06-23 09:27:37: 4) task: snapshot_changes
+2020-06-23 09:27:37: ------------------------------------------------------------
+2020-06-23 09:27:37: 
+2020-06-23 09:27:37: Starting execution
+2020-06-23 09:27:37: ============================================================
+2020-06-23 09:27:37: 
+2020-06-23 09:27:37: ------------------------------------------------------------
+2020-06-23 09:27:37: Running task: update_dependencies
+2020-06-23 09:27:37: ------------------------------------------------------------
+2020-06-23 09:27:37: 
+2020-06-23 09:27:37: Options:
+2020-06-23 09:27:37:   namespaced_org: False
+2020-06-23 09:27:37:   purge_on_delete: True
+2020-06-23 09:27:37:   include_beta: False
+2020-06-23 09:27:37:   allow_newer: True
+2020-06-23 09:27:37:   allow_uninstalls: False
+2020-06-23 09:27:37:   security_type: FULL
+2020-06-23 09:27:37: Beginning task: UpdateDependencies
+2020-06-23 09:27:37: 
+2020-06-23 09:27:37: Project has no dependencies, doing nothing
+2020-06-23 09:27:37: ------------------------------------------------------------
+2020-06-23 09:27:37: Running task: deploy_pre
+2020-06-23 09:27:37: ------------------------------------------------------------
+2020-06-23 09:27:37: 
+2020-06-23 09:27:37: Options:
+2020-06-23 09:27:37:   path: unpackaged/pre
+2020-06-23 09:27:37: Beginning task: DeployBundles
+2020-06-23 09:27:37: 
+2020-06-23 09:27:37: Deploying all metadata bundles in path /private/tmp/cci-demo/Food-Bank/unpackaged/pre
+2020-06-23 09:27:37: Path /private/tmp/cci-demo/Food-Bank/unpackaged/pre not found, skipping
+2020-06-23 09:27:37: Skipping task dx_convert_from (skipped unless project_config.project__source_format == "sfdx" and not org_config.scratch)
+2020-06-23 09:27:37: ------------------------------------------------------------
+2020-06-23 09:27:37: Running task: unschedule_apex
+2020-06-23 09:27:37: ------------------------------------------------------------
+2020-06-23 09:27:37: 
+2020-06-23 09:27:37: Options:
+2020-06-23 09:27:37:   apex: for (CronTrigger t : [SELECT Id FROM CronTrigger]) { System.abortJob(t.Id); }
+2020-06-23 09:27:37: Beginning task: AnonymousApexTask
+2020-06-23 09:27:37: 
+2020-06-23 09:27:37: Executing anonymous Apex
+2020-06-23 09:27:37: Anonymous Apex Success
+2020-06-23 09:27:37: Skipping task update_package_xml (skipped unless project_config.project__source_format != "sfdx" or not org_config.scratch)
+2020-06-23 09:27:37: Skipping task deploy (skipped unless project_config.project__source_format != "sfdx" or not org_config.scratch)
+2020-06-23 09:27:37: ------------------------------------------------------------
+2020-06-23 09:27:37: Running task: dx_push
+2020-06-23 09:27:37: ------------------------------------------------------------
+2020-06-23 09:27:37: 
+2020-06-23 09:27:37: Running command:  sfdx force:source:push -u test-bp0novuz7vyq@example.com
+2020-06-23 09:27:37: Options:
+2020-06-23 09:27:37:   command: sfdx force:source:push -u test-bp0novuz7vyq@example.com
+2020-06-23 09:27:37: Beginning task: SFDXOrgTask
+2020-06-23 09:27:37: 
+2020-06-23 09:27:37: Running command: sfdx force:source:push -u test-bp0novuz7vyq@example.com
+2020-06-23 09:27:39: === Pushed Source
+2020-06-23 09:27:39: No results found
+2020-06-23 09:27:40: Skipping task uninstall_packaged_incremental (skipped unless project_config.project__source_format != "sfdx" or not org_config.scratch)
+2020-06-23 09:27:40: ------------------------------------------------------------
+2020-06-23 09:27:40: Running task: deploy_post
+2020-06-23 09:27:40: ------------------------------------------------------------
+2020-06-23 09:27:40: 
+2020-06-23 09:27:40: Options:
+2020-06-23 09:27:40:   path: unpackaged/post
+2020-06-23 09:27:40:   unmanaged: True
+2020-06-23 09:27:40: Beginning task: DeployBundles
+2020-06-23 09:27:40: 
+2020-06-23 09:27:40: Deploying all metadata bundles in path /private/tmp/cci-demo/Food-Bank/unpackaged/post
+2020-06-23 09:27:40: Path /private/tmp/cci-demo/Food-Bank/unpackaged/post not found, skipping
+2020-06-23 09:27:40: ------------------------------------------------------------
+2020-06-23 09:27:40: Running task: update_admin_profile
+2020-06-23 09:27:40: ------------------------------------------------------------
+2020-06-23 09:27:40: 
+2020-06-23 09:27:40: Options:
+2020-06-23 09:27:40:   managed: False
+2020-06-23 09:27:40:   namespaced_org: False
+2020-06-23 09:27:40:   include_packaged_objects: True
+2020-06-23 09:27:40: Beginning task: ProfileGrantAllAccess
+2020-06-23 09:27:40: 
+2020-06-23 09:27:40: Extracting existing metadata...
+2020-06-23 09:27:40: Pending
+2020-06-23 09:27:41: [Pending]: next check in 1 seconds
+2020-06-23 09:27:42: [Pending]: next check in 1 seconds
+2020-06-23 09:27:43: [Pending]: next check in 2 seconds
+2020-06-23 09:27:46: [Done]
+2020-06-23 09:27:48: Loading transformed metadata...
+2020-06-23 09:27:48: Beginning task: Deploy
+2020-06-23 09:27:48:        As user: test-bp0novuz7vyq@example.com
+2020-06-23 09:27:48:         In org: 00D63000000AYLB
+2020-06-23 09:27:48: 
+2020-06-23 09:27:48: Cleaning meta.xml files of packageVersion elements for deploy
+2020-06-23 09:27:48: Payload size: 4104 bytes
+2020-06-23 09:27:48: Pending
+2020-06-23 09:27:49: [InProgress]: Processing Type: Profile
+2020-06-23 09:27:50: [InProgress]: Processing Type: Profile
+2020-06-23 09:27:51: [InProgress]: Processing Type: Profile
+2020-06-23 09:27:53: [Done]
+2020-06-23 09:27:54: [Success]: Succeeded
+2020-06-23 09:27:54: ------------------------------------------------------------
+2020-06-23 09:27:54: Running task: snapshot_changes
+2020-06-23 09:27:54: ------------------------------------------------------------
+2020-06-23 09:27:54: 
+2020-06-23 09:27:54: Options:
+2020-06-23 09:27:54: Beginning task: SnapshotChanges
+2020-06-23 09:27:54: 
+
+
+
+$ # We can take a look at our org in a web browser:
+
+$ cci org browser
+# *** POOF: CCI would log you into the Scratch Org's Salesforce UI. ***
+
+$ # And that's how we would setup a project and a scratch org in CumulusCI!
+ __     __   ___    ___   _          _      _ 
+ \ \   / /  / _ \  |_ _| | |        / \    | |
+  \ \ / /  | | | |  | |  | |       / _ \   | |
+   \ V /   | |_| |  | |  | |___   / ___ \  |_|
+    \_/     \___/  |___| |_____| /_/   \_\ (_)
+                                              
+
+$ # The next video will show how to pull Custom Objects and Fields from the org.
+

@@ -1,0 +1,289 @@
+  ____                            _           _     _                 
+ |  _ \    ___    _ __    _   _  | |   __ _  | |_  (_)  _ __     __ _ 
+ | |_) |  / _ \  | '_ \  | | | | | |  / _` | | __| | | | '_ \   / _` |
+ |  __/  | (_) | | |_) | | |_| | | | | (_| | | |_  | | | | | | | (_| |
+ |_|      \___/  | .__/   \__,_| |_|  \__,_|  \__| |_| |_| |_|  \__, |
+                 |_|                                            |___/ 
+  ____                                _            ____            _           
+ / ___|    __ _   _ __ ___    _ __   | |   ___    |  _ \    __ _  | |_    __ _ 
+ \___ \   / _` | | '_ ` _ \  | '_ \  | |  / _ \   | | | |  / _` | | __|  / _` |
+  ___) | | (_| | | | | | | | | |_) | | | |  __/   | |_| | | (_| | | |_  | (_| |
+ |____/   \__,_| |_| |_| |_| | .__/  |_|  \___|   |____/   \__,_|  \__|  \__,_|
+                             |_|                                               
+
+$ # Let's see how easily a teammate could spin up a new org from the repo
+
+$ cci org default dev
+dev is now the default org
+
+$ cci flow run dev_org
+2020-06-23 09:33:59: ============================================================
+2020-06-23 09:33:59: Initializing flow: FlowCoordinator (dev_org)
+2020-06-23 09:33:59: Set up an org as a development environment for unmanaged metadata
+2020-06-23 09:33:59: ============================================================
+2020-06-23 09:33:59: 
+2020-06-23 09:33:59: Verifying and refreshing credentials for the specified org: dev.
+2020-06-23 09:33:59: Creating scratch org with command: sfdx force:org:create -f orgs/dev.json --targetdevhubusername pprescod.devhub@salesforce.org -n --durationdays 7 -a "None__dev" -s -w 120 adminEmail="pprescod@salesforce.com" 
+2020-06-23 09:34:21: Successfully created scratch org: 00D0R0000003KPXUA2, username: test-mrrjvd4zsjr2@example.com
+2020-06-23 09:34:21: Skipping resetting password since last attempt failed
+2020-06-23 09:34:21: Getting scratch org info from Salesforce DX
+2020-06-23 09:34:25: Org info has changed, updating org in keychain
+2020-06-23 09:34:25: ------------------------------------------------------------
+2020-06-23 09:34:25: Organization:
+2020-06-23 09:34:25:   Username: test-mrrjvd4zsjr2@example.com
+2020-06-23 09:34:25:     Org Id: 00D0R0000003KPX
+2020-06-23 09:34:25: ------------------------------------------------------------
+2020-06-23 09:34:25: 
+2020-06-23 09:34:25: ------------------------------------------------------------
+2020-06-23 09:34:25: Steps:
+2020-06-23 09:34:25: Description: Set up an org as a development environment for unmanaged metadata
+2020-06-23 09:34:25: 1) flow: dependencies [from current folder]
+2020-06-23 09:34:25:     1) task: update_dependencies
+2020-06-23 09:34:25:     2) task: deploy_pre
+2020-06-23 09:34:25: 2) flow: deploy_unmanaged
+2020-06-23 09:34:25:     0) task: dx_convert_from
+2020-06-23 09:34:25:        when: project_config.project__source_format == "sfdx" and not org_config.scratch
+2020-06-23 09:34:25:     1) task: unschedule_apex
+2020-06-23 09:34:25:     2) task: update_package_xml
+2020-06-23 09:34:25:        when: project_config.project__source_format != "sfdx" or not org_config.scratch
+2020-06-23 09:34:25:     3) task: deploy
+2020-06-23 09:34:25:        when: project_config.project__source_format != "sfdx" or not org_config.scratch
+2020-06-23 09:34:25:     3.1) task: dx_push
+2020-06-23 09:34:25:          when: project_config.project__source_format == "sfdx" and org_config.scratch
+2020-06-23 09:34:25:     4) task: uninstall_packaged_incremental
+2020-06-23 09:34:25:        when: project_config.project__source_format != "sfdx" or not org_config.scratch
+2020-06-23 09:34:25: 3) flow: config_dev
+2020-06-23 09:34:25:     1) task: deploy_post
+2020-06-23 09:34:25:     2) task: update_admin_profile
+2020-06-23 09:34:25: 4) task: snapshot_changes
+2020-06-23 09:34:25: ------------------------------------------------------------
+2020-06-23 09:34:25: 
+2020-06-23 09:34:25: Starting execution
+2020-06-23 09:34:25: ============================================================
+2020-06-23 09:34:25: 
+2020-06-23 09:34:25: ------------------------------------------------------------
+2020-06-23 09:34:25: Running task: update_dependencies
+2020-06-23 09:34:25: ------------------------------------------------------------
+2020-06-23 09:34:25: 
+2020-06-23 09:34:25: Options:
+2020-06-23 09:34:25:   namespaced_org: False
+2020-06-23 09:34:25:   purge_on_delete: True
+2020-06-23 09:34:25:   include_beta: False
+2020-06-23 09:34:25:   allow_newer: True
+2020-06-23 09:34:25:   allow_uninstalls: False
+2020-06-23 09:34:25:   security_type: FULL
+2020-06-23 09:34:25: Beginning task: UpdateDependencies
+2020-06-23 09:34:25: 
+2020-06-23 09:34:25: Project has no dependencies, doing nothing
+2020-06-23 09:34:25: ------------------------------------------------------------
+2020-06-23 09:34:25: Running task: deploy_pre
+2020-06-23 09:34:25: ------------------------------------------------------------
+2020-06-23 09:34:25: 
+2020-06-23 09:34:25: Options:
+2020-06-23 09:34:25:   path: unpackaged/pre
+2020-06-23 09:34:25: Beginning task: DeployBundles
+2020-06-23 09:34:25: 
+2020-06-23 09:34:25: Deploying all metadata bundles in path /private/tmp/cci-demo/Food-Bank/unpackaged/pre
+2020-06-23 09:34:25: Path /private/tmp/cci-demo/Food-Bank/unpackaged/pre not found, skipping
+2020-06-23 09:34:25: Skipping task dx_convert_from (skipped unless project_config.project__source_format == "sfdx" and not org_config.scratch)
+2020-06-23 09:34:25: ------------------------------------------------------------
+2020-06-23 09:34:25: Running task: unschedule_apex
+2020-06-23 09:34:25: ------------------------------------------------------------
+2020-06-23 09:34:25: 
+2020-06-23 09:34:25: Options:
+2020-06-23 09:34:25:   apex: for (CronTrigger t : [SELECT Id FROM CronTrigger]) { System.abortJob(t.Id); }
+2020-06-23 09:34:25: Beginning task: AnonymousApexTask
+2020-06-23 09:34:25: 
+2020-06-23 09:34:25: Executing anonymous Apex
+2020-06-23 09:34:26: Anonymous Apex Success
+2020-06-23 09:34:26: Skipping task update_package_xml (skipped unless project_config.project__source_format != "sfdx" or not org_config.scratch)
+2020-06-23 09:34:26: Skipping task deploy (skipped unless project_config.project__source_format != "sfdx" or not org_config.scratch)
+2020-06-23 09:34:26: ------------------------------------------------------------
+2020-06-23 09:34:26: Running task: dx_push
+2020-06-23 09:34:26: ------------------------------------------------------------
+2020-06-23 09:34:26: 
+2020-06-23 09:34:26: Running command:  sfdx force:source:push -u test-mrrjvd4zsjr2@example.com
+2020-06-23 09:34:26: Options:
+2020-06-23 09:34:26:   command: sfdx force:source:push -u test-mrrjvd4zsjr2@example.com
+2020-06-23 09:34:26: Beginning task: SFDXOrgTask
+2020-06-23 09:34:26: 
+2020-06-23 09:34:26: Running command: sfdx force:source:push -u test-mrrjvd4zsjr2@example.com
+2020-06-23 09:34:28: Job ID | 0Af0R00000snoK6SAI
+2020-06-23 09:34:33: === Pushed Source
+2020-06-23 09:34:33: STATE  FULL NAME                                 TYPE          PROJECT PATH
+2020-06-23 09:34:33: ─────  ────────────────────────────────────────  ────────────  ─────────────────────────────────────────────────────────────────────────────────────────────
+2020-06-23 09:34:33: Add    Delivery_Item__c-Delivery Item Layout     Layout        force-app/main/default/layouts/Delivery_Item__c-Delivery Item Layout.layout-meta.xml
+2020-06-23 09:34:33: Add    Delivery__c-Delivery Layout               Layout        force-app/main/default/layouts/Delivery__c-Delivery Layout.layout-meta.xml
+2020-06-23 09:34:33: Add    Delivery_Item__c                          CustomObject  force-app/main/default/objects/Delivery_Item__c/Delivery_Item__c.object-meta.xml
+2020-06-23 09:34:33: Add    Delivery_Item__c.Delivery__c              CustomField   force-app/main/default/objects/Delivery_Item__c/fields/Delivery__c.field-meta.xml
+2020-06-23 09:34:33: Add    Delivery_Item__c.Description__c           CustomField   force-app/main/default/objects/Delivery_Item__c/fields/Description__c.field-meta.xml
+2020-06-23 09:34:33: Add    Delivery_Item__c.DjFoodBankID__c          CustomField   force-app/main/default/objects/Delivery_Item__c/fields/DjFoodBankID__c.field-meta.xml
+2020-06-23 09:34:33: Add    Delivery_Item__c.Storage_Requirements__c  CustomField   force-app/main/default/objects/Delivery_Item__c/fields/Storage_Requirements__c.field-meta.xml
+2020-06-23 09:34:33: Add    Delivery__c                               CustomObject  force-app/main/default/objects/Delivery__c/Delivery__c.object-meta.xml
+2020-06-23 09:34:33: Add    Delivery__c.DjFoodBankID__c               CustomField   force-app/main/default/objects/Delivery__c/fields/DjFoodBankID__c.field-meta.xml
+2020-06-23 09:34:33: Add    Delivery__c.Notes__c                      CustomField   force-app/main/default/objects/Delivery__c/fields/Notes__c.field-meta.xml
+2020-06-23 09:34:33: Add    Delivery__c.Scheduled_Date__c             CustomField   force-app/main/default/objects/Delivery__c/fields/Scheduled_Date__c.field-meta.xml
+2020-06-23 09:34:33: Add    Delivery__c.Status__c                     CustomField   force-app/main/default/objects/Delivery__c/fields/Status__c.field-meta.xml
+2020-06-23 09:34:33: Add    Delivery__c.Supplier__c                   CustomField   force-app/main/default/objects/Delivery__c/fields/Supplier__c.field-meta.xml
+2020-06-23 09:34:33: Add    Delivery__c.All                           ListView      force-app/main/default/objects/Delivery__c/listViews/All.listView-meta.xml
+2020-06-23 09:34:33: Add    Delivery__c                               CustomTab     force-app/main/default/tabs/Delivery__c.tab-meta.xml
+2020-06-23 09:34:34: Skipping task uninstall_packaged_incremental (skipped unless project_config.project__source_format != "sfdx" or not org_config.scratch)
+2020-06-23 09:34:34: ------------------------------------------------------------
+2020-06-23 09:34:34: Running task: deploy_post
+2020-06-23 09:34:34: ------------------------------------------------------------
+2020-06-23 09:34:34: 
+2020-06-23 09:34:34: Options:
+2020-06-23 09:34:34:   path: unpackaged/post
+2020-06-23 09:34:34:   unmanaged: True
+2020-06-23 09:34:34: Beginning task: DeployBundles
+2020-06-23 09:34:34: 
+2020-06-23 09:34:34: Deploying all metadata bundles in path /private/tmp/cci-demo/Food-Bank/unpackaged/post
+2020-06-23 09:34:34: Path /private/tmp/cci-demo/Food-Bank/unpackaged/post not found, skipping
+2020-06-23 09:34:34: ------------------------------------------------------------
+2020-06-23 09:34:34: Running task: update_admin_profile
+2020-06-23 09:34:34: ------------------------------------------------------------
+2020-06-23 09:34:34: 
+2020-06-23 09:34:34: Options:
+2020-06-23 09:34:34:   managed: False
+2020-06-23 09:34:34:   namespaced_org: False
+2020-06-23 09:34:34:   include_packaged_objects: True
+2020-06-23 09:34:34: Beginning task: ProfileGrantAllAccess
+2020-06-23 09:34:34: 
+2020-06-23 09:34:34: Extracting existing metadata...
+2020-06-23 09:34:34: Pending
+2020-06-23 09:34:35: [Pending]: next check in 1 seconds
+2020-06-23 09:34:37: [Pending]: next check in 1 seconds
+2020-06-23 09:34:38: [Done]
+2020-06-23 09:34:41: Loading transformed metadata...
+2020-06-23 09:34:41: Beginning task: Deploy
+2020-06-23 09:34:41:        As user: test-mrrjvd4zsjr2@example.com
+2020-06-23 09:34:41:         In org: 00D0R0000003KPX
+2020-06-23 09:34:41: 
+2020-06-23 09:34:41: Cleaning meta.xml files of packageVersion elements for deploy
+2020-06-23 09:34:41: Payload size: 4296 bytes
+2020-06-23 09:34:41: Pending
+2020-06-23 09:34:42: [InProgress]: Processing Type: Profile
+2020-06-23 09:34:43: [InProgress]: Processing Type: Profile
+2020-06-23 09:34:45: [Done]
+2020-06-23 09:34:46: [Success]: Succeeded
+2020-06-23 09:34:46: ------------------------------------------------------------
+2020-06-23 09:34:46: Running task: snapshot_changes
+2020-06-23 09:34:46: ------------------------------------------------------------
+2020-06-23 09:34:46: 
+2020-06-23 09:34:46: Options:
+2020-06-23 09:34:46: Beginning task: SnapshotChanges
+2020-06-23 09:34:46: 
+
+
+
+$ # The captured Delivery__c and Delivery_Item__c objects are now in the new org.
+
+$ # Now the teammate could use the Salesforce UI to create some sample data records.
+
+$ cci org browser
+# *** POOF: CCI would launch a web browser and log the teammate in. ***
+
+$ # We created some records off-screen. Let's pull them down and use them as sample data.
+
+$ # First we generate a mapping file:
+
+$ cci task info generate_dataset_mapping | head
+generate_dataset_mapping
+
+  Description: Create a mapping for extracting data from an org.
+
+  Class: cumulusci.tasks.bulkdata.GenerateMapping
+
+  Generate a mapping file for use with the extract_dataset and load_dataset
+  tasks. This task will examine the schema in the specified org and attempt to
+  infer a mapping suitable for extracting data in packaged and custom objects
+  as well as customized standard objects.
+
+$ cci task run generate_dataset_mapping
+2020-06-23 09:37:07: Getting scratch org info from Salesforce DX
+2020-06-23 09:37:10: Beginning task: GenerateMapping
+2020-06-23 09:37:10:        As user: test-mrrjvd4zsjr2@example.com
+2020-06-23 09:37:10:         In org: 00D0R0000003KPX
+2020-06-23 09:37:10: 
+2020-06-23 09:37:10: Collecting sObject information
+2020-06-23 09:39:05: Creating mapping schema datasets/mapping.yml
+
+
+
+$ # Then we extract the actual data:
+
+$ cci task run extract_dataset
+2020-06-23 09:39:18: Using in-memory sqlite database
+2020-06-23 09:39:18: Getting scratch org info from Salesforce DX
+2020-06-23 09:39:22: Beginning task: ExtractData
+2020-06-23 09:39:22:        As user: test-mrrjvd4zsjr2@example.com
+2020-06-23 09:39:22:         In org: 00D0R0000003KPX
+2020-06-23 09:39:22: 
+2020-06-23 09:39:22: Extracting data for sObject Account
+2020-06-23 09:39:23: Created Bulk API query job 7500R000003VPaFQAW
+2020-06-23 09:39:24: Waiting for job 7500R000003VPaFQAW (1/1 batches complete)
+2020-06-23 09:39:24: Job 7500R000003VPaFQAW finished with result: Success
+2020-06-23 09:39:26: Done! (Total: 1)
+2020-06-23 09:39:26: Extracting data for sObject Delivery__c
+2020-06-23 09:39:27: Created Bulk API query job 7500R000003VPaKQAW
+2020-06-23 09:39:28: Waiting for job 7500R000003VPaKQAW (1/1 batches complete)
+2020-06-23 09:39:28: Job 7500R000003VPaKQAW finished with result: Success
+2020-06-23 09:39:30: Done! (Total: 1)
+2020-06-23 09:39:30: Extracting data for sObject Delivery_Item__c
+2020-06-23 09:39:30: Created Bulk API query job 7500R000003VPaPQAW
+2020-06-23 09:39:31: Waiting for job 7500R000003VPaPQAW (1/1 batches complete)
+2020-06-23 09:39:31: Job 7500R000003VPaPQAW finished with result: Success
+2020-06-23 09:39:33: Done! (Total: 2)
+
+
+
+$ ls datasets
+mapping.yml
+sample.sql
+
+$ vim datasets/sample.sql
+="datasets/sample.sql" 32L, 1113CBEGIN TRANSACTION;
+CREATE TABLE "Account" (sf_id VARCHAR(255) NOT NULL,"Name" VARCHAR(255),"ParentId" VARCHAR(255),record_type VARCHAR(255),PRIMARY KEY (sf_id)
+);
+INSERT INTO "Account" VALUES('0010R000010nV24QAE','A Local Farm','',NULL);
+CREATE TABLE "Delivery_Item__c" (sf_id VARCHAR(255) NOT NULL,"Description__c" VARCHAR(255),"DjFoodBankID__c" VARCHAR(255),"Storage_Requirements__c" VARCHAR(255),"Delivery__c" VARCHAR(255),record_type VARCHAR(255),PRIMARY KEY (sf_id)
+);
+INSERT INTO "Delivery_Item__c" VALUES('a000R0000034ZWXQA2','Pumpkins','','','a010R000008XwkGQAS',NULL);
+INSERT INTO "Delivery_Item__c" VALUES('a000R0000034ZWYQA2','Frozen Peas','','Frozen','a010R000008XwkGQAS',NULL);
+CREATE TABLE "Delivery__c" (sf_id VARCHAR(255) NOT NULL,"DjFoodBankID__c" VARCHAR(255),"Notes__c" VARCHAR(255),"Scheduled_Date__c" VARCHAR(255),"Status__c" VARCHAR(255),"Supplier__c" VARCHAR(255),record_type VARCHAR(255),
+
+
+
+
+
+
+
+PRIMARY KEY (sf_id)
+);
+INSERT INTO "Delivery__c" VALUES('a010R000008XwkGQAS','','','2019-11-15','Scheduled','0010R000010nV24QAE',NULL);
+COMMIT;
+
+>
+$ # Looks like real data! Let's save it for later.
+
+$ git add datasets
+
+$ git commit -m "Add sample data"
+[master a2af5b9] Add sample data
+ 2 files changed, 65 insertions(+), 45 deletions(-)
+ rewrite datasets/mapping.yml (92%)
+ create mode 100644 datasets/sample.sql
+
+$ cci org scratch_delete dev
+2020-06-23 09:40:11: Deleting scratch org with command: sfdx force:org:delete -p -u test-mrrjvd4zsjr2@example.com
+2020-06-23 09:40:14: Successfully marked scratch org test-mrrjvd4zsjr2@example.com for deletion
+
+  ____    ____    _____   ____    _____    ___    _ 
+ |  _ \  |  _ \  | ____| / ___|  |_   _|  / _ \  | |
+ | |_) | | |_) | |  _|   \___ \    | |   | | | | | |
+ |  __/  |  _ <  | |___   ___) |   | |   | |_| | |_|
+ |_|     |_| \_\ |_____| |____/    |_|    \___/  (_)
+                                                    
+
+$ # The next video will show how we can make it easy for QA to spin up testing orgs.
+
